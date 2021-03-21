@@ -34,7 +34,7 @@ def run_demo_model(network_id, scenario_ids, **kwargs):
     oa.start()
 
     # Get the network data (note the ['network'] at the end; this will be fixed in the future).
-    network = oa.Client.get_network(network_id)['network']
+    # network = oa.Client.get_network(network_id)['network']
 
     # do something with the network here...
     # e.g.: my_model = create_my_model(network)
@@ -58,16 +58,19 @@ def run_demo_model(network_id, scenario_ids, **kwargs):
         datetime = start + dt.timedelta(days=i)
         logger.info(datetime)
 
-        # This repots progress to the web client (i.e. app user)
-        oa.step(datetime=datetime)
-
         # Do something very important and computationally expensive here.
         try:
             sleep(1)
-            if i == 80:
-                raise  # This is a fake error for demo
+
+            # This is a fake error for demo
+            if i == 5:
+                raise Exception("Oops! Something went wrong.")
+
+            # This repots progress to the web client (i.e. app user)
+            oa.step(datetime=datetime)
         except Exception as err:
-            oa.error(extra_info=err.message)
+            logger.info(err)
+            oa.error(extra_info=err)
             break
 
     # Tell OA that the model is finished
